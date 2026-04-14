@@ -1,1 +1,91 @@
-// app global css
+// ══════════════════════════════════════
+// FUENTE
+// ══════════════════════════════════════
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+// ══════════════════════════════════════
+// RESET & BASE
+// ══════════════════════════════════════
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#q-app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Roboto', -apple-system, sans-serif;
+  background: $bg-deep;
+  color: $text-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ══════════════════════════════════════
+// SCROLLBAR CUSTOM
+// ══════════════════════════════════════
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+}
+
+// ══════════════════════════════════════
+// QUASAR OVERRIDES — DARK MODE
+// ══════════════════════════════════════
+
+// Loading overlay
+.q-loading__backdrop {
+  background: rgba($bg-deep, 0.85) !important;
+  backdrop-filter: blur(4px);
+}
+
+.q-loading__box {
+  background: $bg-card !important;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  padding: 28px 36px !important;
+  color: $text-primary !important;
+
+  .q-spinner { color: $primary !important; }
+
+  .q-loading__message {
+    color: $text-secondary !important;
+    margin-top: 12px;
+    font-size: 0.88rem;
+  }
+}
+
+// Notify
+.q-notification {
+  border-radius: 12px !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+}
+
+// ══════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════
+.text-primary   { color: $text-primary !important; }
+.text-secondary { color: $text-secondary !important; }
+.text-muted     { color: $text-muted !important; }

@@ -1,25 +1,35 @@
 // Quasar Sass (& SCSS) Variables
-// --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// ——————————————————————————————
 
-// Check documentation for full list of Quasar variables
+// ══════════════════════════════════════
+// PALETA PRINCIPAL
+// ══════════════════════════════════════
+$primary:   #6366f1;   // Indigo vibrante
+$secondary: #8b5cf6;   // Violet
+$accent:    #a78bfa;   // Lavender
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+$positive:  #10b981;   // Emerald
+$negative:  #ef4444;   // Red
+$info:      #38bdf8;   // Sky blue
+$warning:   #f59e0b;   // Amber
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
+// ══════════════════════════════════════
+// TEMA OSCURO
+// ══════════════════════════════════════
+$dark:      #1e1e2e;
+$dark-page: #0d0f1a;
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+// ══════════════════════════════════════
+// VARIABLES CUSTOM DEL SISTEMA
+// ══════════════════════════════════════
+$bg-deep:      #0d0f1a;
+$bg-sidebar:   #111827;
+$bg-card:      #161b2e;
+$bg-input:     #1a2035;
+$bg-hover:     rgba(255, 255, 255, 0.05);
 
-$dark: #1d1d1d;
-$dark-page: #121212;
+$border-color: rgba(255, 255, 255, 0.07);
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+$text-primary:   #f1f5f9;
+$text-secondary: #cbd5e1;
+$text-muted:     #64748b;

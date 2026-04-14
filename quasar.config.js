@@ -1,6 +1,6 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
-
+import 'dotenv/config'
 import { defineConfig } from '#q-app/wrappers'
 
 export default defineConfig((/* ctx */) => {
@@ -11,7 +11,7 @@ export default defineConfig((/* ctx */) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: [],
+    boot: ['pinia', 'axios', 'auth'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -73,25 +73,36 @@ export default defineConfig((/* ctx */) => {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
       // https: true,
+      port: process.env.PORT ? parseInt(process.env.PORT) : 7000,
       open: true, // opens browser window automatically
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
-      config: {},
+      config: {
+        dark: true, // Forzar modo oscuro siempre
+        notify: {
+          position: 'top-right',
+          timeout: 3500,
+          textColor: 'white',
+          actions: [{ icon: 'close', color: 'white' }],
+        },
+        loading: {
+          delay: 200,
+          spinner: 'QSpinnerOrbit',
+          spinnerColor: 'primary',
+          spinnerSize: 64,
+          backgroundColor: 'transparent',
+          message: 'Cargando...',
+          messageColor: 'grey-4',
+        },
+      },
 
-      // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
-
-      // For special cases outside of where the auto-import strategy can have an impact
-      // (like functional components as one of the examples),
-      // you can manually specify Quasar components/directives to be available everywhere:
-      //
-      // components: [],
-      // directives: [],
+      // iconSet: 'material-icons',
+      // lang: 'es',
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify', 'Loading', 'Dialog'],
     },
 
     // animations: 'all', // --- includes all animations

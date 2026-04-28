@@ -101,7 +101,7 @@
           </div>
 
           <div class="field-group">
-            <label class="field-label">Teléfono <span style="color:$text-muted; font-weight:400">(opcional)</span></label>
+            <label class="field-label">Teléfono <span class="optional-text">(opcional)</span></label>
             <q-input v-model="form.telefono" dark outlined dense placeholder="+54 9 11 1234-5678"
               class="styled-input" />
           </div>
@@ -131,6 +131,7 @@ const props = defineProps({
   sucursalId: { type: Number, default: null },
   fechaDefault: { type: String, default: '' },
   saving: { type: Boolean, default: false },
+  initialData: { type: Object, default: null }, // { cancha_id, fecha, hora_inicio, hora_fin }
 })
 const emit = defineEmits(['update:modelValue', 'save'])
 
@@ -146,10 +147,10 @@ const canchaOptions = computed(() =>
 )
 
 const defaultForm = () => ({
-  cancha_id: null,
-  fecha: props.fechaDefault || new Date().toISOString().slice(0, 10),
-  hora_inicio: '',
-  hora_fin: '',
+  cancha_id: props.initialData?.cancha_id || null,
+  fecha: props.initialData?.fecha || props.fechaDefault || new Date().toISOString().slice(0, 10),
+  hora_inicio: props.initialData?.hora_inicio || '',
+  hora_fin: props.initialData?.hora_fin || '',
   nombre: '',
   apellido: '',
   email: '',
@@ -168,7 +169,10 @@ function close() { show.value = false }
 async function submit() {
   const ok = await formRef.value.validate()
   if (!ok) return
-  const payload = { ...form.value }
+  const payload = { 
+    ...form.value,
+    estado: 'C' // Reserva::ESTADO_CONFIRMADA
+  }
   if (!payload.telefono) delete payload.telefono
   emit('save', payload)
 }
@@ -228,6 +232,7 @@ async function submit() {
 }
 
 .req { color: $negative; margin-left: 2px; }
+.optional-text { color: $text-muted; font-weight: 400; font-size: 0.75rem; text-transform: none; }
 
 .styled-input :deep(.q-field__control) {
   background: $bg-input !important; border-radius: 10px; border: 1px solid $border-color;

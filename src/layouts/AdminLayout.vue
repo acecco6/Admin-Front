@@ -49,11 +49,25 @@
             <q-item-section class="nav-text">Tipo de Canchas</q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple :to="{ name: 'reservas' }" exact
-            active-class="nav-item--active" class="nav-item">
-            <q-item-section avatar><q-icon name="event" /></q-item-section>
-            <q-item-section class="nav-text">Reservas</q-item-section>
-          </q-item>
+          <q-expansion-item
+            icon="event"
+            label="Reservas"
+            active-class="nav-item--active"
+            class="nav-item-expansion"
+            :header-class="{'nav-item--active': $route.path.includes('/reservas')}"
+            default-opened
+          >
+            <q-item clickable v-ripple :to="{ name: 'reservas-ocupadas' }" exact
+              active-class="nav-item--active-sub" class="nav-item-sub">
+              <q-item-section avatar><q-icon name="block" size="18px" /></q-item-section>
+              <q-item-section class="nav-text">Ocupadas</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple :to="{ name: 'reservas-disponibles' }" exact
+              active-class="nav-item--active-sub" class="nav-item-sub">
+              <q-item-section avatar><q-icon name="check_circle" size="18px" /></q-item-section>
+              <q-item-section class="nav-text">Disponibles</q-item-section>
+            </q-item>
+          </q-expansion-item>
 
           <q-item clickable v-ripple :to="{ name: 'reservas-fijas' }" exact
             active-class="nav-item--active" class="nav-item">
@@ -338,6 +352,58 @@ function logout() {
     .nav-text {
       color: #ffffff;
       font-weight: 700;
+    }
+  }
+}
+
+.nav-item-expansion {
+  border-radius: 10px;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  transition: all 0.2s ease-in-out;
+
+  :deep(.q-item) {
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-height: 44px;
+    color: inherit;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.03);
+      color: #f1f5f9;
+    }
+  }
+
+  :deep(.q-expansion-item__container > .q-item--active) {
+    background: transparent !important;
+  }
+}
+
+.nav-item-sub {
+  border-radius: 10px;
+  margin: 2px 0 2px 20px;
+  color: #64748b;
+  padding: 8px 14px;
+  min-height: 38px;
+  transition: all 0.2s;
+
+  .nav-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  &:hover {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  &--active-sub {
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.05);
+    .nav-text {
+      font-weight: 700;
+      color: #ffffff;
     }
   }
 }

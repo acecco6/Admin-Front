@@ -1,20 +1,36 @@
 <template>
   <q-page class="module-page">
     <div class="page-container">
-
       <!-- PAGE HEADER -->
       <div class="page-header">
         <div class="header-content">
           <div class="title-section">
-            <div class="icon-wrapper" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2)); border-color: rgba(99,102,241,0.3);">
+            <div
+              class="icon-wrapper"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(99, 102, 241, 0.2),
+                  rgba(139, 92, 246, 0.2)
+                );
+                border-color: rgba(99, 102, 241, 0.3);
+              "
+            >
               <q-icon name="event" class="header-icon" style="color: #6366f1" />
             </div>
             <div>
-              <h1 class="page-title">Reservas</h1>
-              <p class="page-subtitle">Visualizá y gestioná los turnos diarios por sucursal.</p>
+              <h1 class="page-title">Reservas Ocupadas</h1>
+              <p class="page-subtitle">Visualizá y gestioná los turnos confirmados por sucursal.</p>
             </div>
           </div>
-          <q-btn color="primary" icon="add" label="Nueva Reserva" unelevated class="add-btn" @click="openForm()" />
+          <q-btn
+            color="primary"
+            icon="add"
+            label="Nueva Reserva"
+            unelevated
+            class="add-btn"
+            @click="openForm()"
+          />
         </div>
       </div>
 
@@ -24,10 +40,14 @@
           <label class="filter-label">Sucursal</label>
           <q-select
             v-model="sucursalId"
-            dark outlined dense
+            dark
+            outlined
+            dense
             :options="sucursalOptions"
-            option-value="id" option-label="nombre"
-            emit-value map-options
+            option-value="id"
+            option-label="nombre"
+            emit-value
+            map-options
             placeholder="Seleccionar sucursal..."
             class="filter-select"
             @update:model-value="cargarReservas"
@@ -37,10 +57,14 @@
           <label class="filter-label">Tipos de canchas</label>
           <q-select
             v-model="tipoCanchaId"
-            dark outlined dense
+            dark
+            outlined
+            dense
             :options="tipoCanchaOptions"
-            option-value="id" option-label="nombre"
-            emit-value map-options
+            option-value="id"
+            option-label="nombre"
+            emit-value
+            map-options
             placeholder="Seleccionar sucursal..."
             class="filter-select"
             @update:model-value="cargarReservas"
@@ -50,7 +74,10 @@
           <label class="filter-label">Fecha</label>
           <q-input
             v-model="fecha"
-            dark outlined dense type="date"
+            dark
+            outlined
+            dense
+            type="date"
             class="filter-date"
             @update:model-value="cargarReservas"
           />
@@ -85,17 +112,28 @@
         <!-- Info header -->
         <div class="content-header">
           <div class="content-title">
-            <span>{{ reservasData.canchas ? Object.keys(reservasData.canchas).length : 0 }} canchas</span>
+            <span
+              >{{
+                reservasData.canchas ? Object.keys(reservasData.canchas).length : 0
+              }}
+              canchas</span
+            >
             <span class="dot">·</span>
             <span>{{ fechaFormateada }}</span>
           </div>
           <div class="legend">
             <div class="legend-item">
-              <div class="legend-dot" style="background: rgba(239,68,68,0.8)"></div>
+              <div class="legend-dot" style="background: rgba(239, 68, 68, 0.8)"></div>
               <span>Ocupado</span>
             </div>
             <div class="legend-item">
-              <div class="legend-dot" style="background: rgba(16,185,129,0.3); border: 1px solid rgba(16,185,129,0.5)"></div>
+              <div
+                class="legend-dot"
+                style="
+                  background: rgba(16, 185, 129, 0.3);
+                  border: 1px solid rgba(16, 185, 129, 0.5);
+                "
+              ></div>
               <span>Libre</span>
             </div>
           </div>
@@ -103,7 +141,11 @@
 
         <!-- GRILLA de canchas -->
         <div class="canchas-section">
-          <div v-for="cancha in reservasData.reservas" :key="cancha.cancha_id" class="cancha-column-card">
+          <div
+            v-for="cancha in reservasData.reservas"
+            :key="cancha.cancha_id"
+            class="cancha-column-card"
+          >
             <div class="cancha-col-header">
               <div class="cancha-col-name">{{ cancha.nombre }}</div>
               <q-chip dense color="negative" text-color="white" size="xs" icon="block">
@@ -113,17 +155,23 @@
 
             <div class="turnos-list">
               <div
-                v-for="turno in cancha.ocupadas" :key="turno.reserva_id"
+                v-for="turno in cancha.ocupadas"
+                :key="turno.reserva_id"
                 class="turno-pill turno-pill--ocupado"
                 @click="verDetalle(turno.reserva_id)"
               >
-                <div class="turno-time">
-                  {{ turno.hora_inicio }} — {{ turno.hora_fin }}
-                </div>
+                <div class="turno-time">{{ turno.hora_inicio }} — {{ turno.hora_fin }}</div>
                 <div class="turno-meta">
                   <q-icon name="receipt_long" size="12px" />
                   #{{ turno.reserva_id }}
-                  <q-chip v-if="turno.pago_monto" dense color="positive" text-color="white" size="xs" class="pago-chip">
+                  <q-chip
+                    v-if="turno.pago_monto"
+                    dense
+                    color="positive"
+                    text-color="white"
+                    size="xs"
+                    class="pago-chip"
+                  >
                     Pagado
                   </q-chip>
                 </div>
@@ -151,10 +199,7 @@
     />
 
     <!-- Detalle Dialog -->
-    <ReservaDetalleDialog
-      v-model="detalleOpen"
-      :reserva="detalleReserva"
-    />
+    <ReservaDetalleDialog v-model="detalleOpen" :reserva="detalleReserva" />
   </q-page>
 </template>
 
@@ -167,7 +212,8 @@ import { getSucursales } from 'src/services/sucursalService'
 import { getCanchas } from 'src/services/canchaService'
 import { getTipoCanchas } from 'src/services/tipoCanchaService'
 
-const { reservasData, loading, saving, fetchReservas, fetchDetalleReserva, guardarReserva } = useReservas()
+const { reservasData, loading, saving, fetchReservas, fetchDetalleReserva, guardarReserva } =
+  useReservas()
 
 const sucursalId = ref(null)
 const tipoCanchaId = ref(null)
@@ -186,14 +232,17 @@ const tipoCanchaOptions = computed(() => tipoCanchas.value)
 // Canchas aplanadas de la sucursal seleccionada
 const canchasPlanas = computed(() => {
   if (!sucursalId.value) return []
-  const grupo = todasCanchas.value.find(g => g.id === sucursalId.value)
+  const grupo = todasCanchas.value.find((g) => g.id === sucursalId.value)
   return grupo?.canchas ?? []
 })
 
 const fechaFormateada = computed(() => {
   if (!fecha.value) return ''
   return new Date(fecha.value + 'T12:00:00').toLocaleDateString('es-AR', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   })
 })
 
@@ -263,52 +312,81 @@ onMounted(async () => {
 .filter-select {
   width: 280px;
   :deep(.q-field__control) {
-    background: $bg-card !important; border-radius: 12px; border: 1px solid $border-color;
-    &:before { border: none !important; }
-    &:hover { border-color: rgba($primary, 0.4); }
+    background: $bg-card !important;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    &:before {
+      border: none !important;
+    }
+    &:hover {
+      border-color: rgba($primary, 0.4);
+    }
   }
 }
 
 .filter-date {
   width: 180px;
   :deep(.q-field__control) {
-    background: $bg-card !important; border-radius: 12px; border: 1px solid $border-color;
-    &:before { border: none !important; }
+    background: $bg-card !important;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    &:before {
+      border: none !important;
+    }
   }
 }
 
 /* ─── ESTADOS ─── */
 .loading-state {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 16px; padding: 80px 20px;
-  color: $text-muted; font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 20px;
+  color: $text-muted;
+  font-size: 0.9rem;
 }
 
 /* ─── CONTENT HEADER ─── */
 .content-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
-  flex-wrap: wrap; gap: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .content-title {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 0.9rem; color: $text-secondary; font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: $text-secondary;
+  font-weight: 600;
 
-  .dot { color: $text-muted; }
+  .dot {
+    color: $text-muted;
+  }
 }
 
 .legend {
-  display: flex; gap: 16px;
+  display: flex;
+  gap: 16px;
 }
 
 .legend-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 0.78rem; color: $text-muted;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: $text-muted;
 }
 
 .legend-dot {
-  width: 12px; height: 12px; border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
 }
 
 /* ─── CANCHAS GRID ─── */
@@ -328,7 +406,9 @@ onMounted(async () => {
 .cancha-col-header {
   padding: 14px 16px;
   background: rgba(0, 0, 0, 0.25);
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
   border-bottom: 1px solid $border-color;
 }
@@ -374,16 +454,24 @@ onMounted(async () => {
 }
 
 .turno-meta {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 0.75rem; color: $text-muted;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: $text-muted;
 }
 
-.pago-chip { margin-left: 4px; }
+.pago-chip {
+  margin-left: 4px;
+}
 
 .no-turnos {
-  display: flex; align-items: center; gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 20px 8px;
-  font-size: 0.83rem; color: $text-muted;
+  font-size: 0.83rem;
+  color: $text-muted;
   justify-content: center;
 }
 </style>

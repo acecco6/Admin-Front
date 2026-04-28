@@ -162,6 +162,7 @@
     <!-- Dialog buscar reserva -->
     <BuscarReservaDialog
       v-model="buscarReservaOpen"
+      :sucursal-id="sucursalId"
       @selected="onReservaSeleccionada"
     />
   </q-page>

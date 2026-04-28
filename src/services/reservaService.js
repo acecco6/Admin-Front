@@ -6,10 +6,12 @@ import { api } from 'src/services/http/api'
  * Obtiene horarios disponibles de una sucursal para una fecha.
  * @param {number} sucursal_id
  * @param {string} fecha  - "YYYY-MM-DD"
+ * @param {number} minutos
+ * @param {number} tipo_cancha_id
  * @returns {Promise<Object>}
  */
-export function getDisponibilidad(sucursal_id, fecha) {
-  return api.get('/api/reservas/disponibilidad', { params: { sucursal_id, fecha } }).then((r) => r.data.data)
+export function getDisponibilidad(sucursal_id, fecha, minutos, tipo_cancha_id) {
+  return api.get('/api/reservas/disponibilidad', { params: { sucursal_id, fecha, minutos, tipo_cancha_id } }).then((r) => r.data.data)
 }
 
 /**

@@ -37,9 +37,21 @@ const routes = [
       },
       {
         path: 'reservas',
-        name: 'reservas',
-        component: () => import('src/modules/reservas/ReservasPage.vue'),
         meta: { requiresAuth: true, label: 'Reservas' },
+        children: [
+          {
+            path: 'ocupadas',
+            name: 'reservas-ocupadas',
+            component: () => import('src/modules/reservas/ReservasOcupadasPage.vue'),
+            meta: { requiresAuth: true, label: 'Ocupadas' },
+          },
+          {
+            path: 'disponibles',
+            name: 'reservas-disponibles',
+            component: () => import('src/modules/reservas/ReservasDisponiblesPage.vue'),
+            meta: { requiresAuth: true, label: 'Disponibles' },
+          },
+        ],
       },
       {
         path: 'reservas-fijas',

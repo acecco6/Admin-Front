@@ -15,3 +15,11 @@ export function cobrarReserva(payload) {
 export function cobrarTienda(payload) {
   return api.post('/api/pago/tienda', payload).then((r) => r.data)
 }
+
+/**
+ * Obtiene el historial de pagos paginado.
+ * @param {object} params - Filtros (sucursal_id, page, per_page, fecha)
+ */
+export function getPagos(params) {
+  return api.get('/api/pago', { params }).then((r) => r.data)
+}

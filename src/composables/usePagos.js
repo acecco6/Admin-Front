@@ -1,10 +1,12 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { cobrarReserva, cobrarTienda } from 'src/services/pagoService'
+import { cobrarReserva, cobrarTienda, getPagos } from 'src/services/pagoService'
 
 export function usePagos() {
   const $q = useQuasar()
   const saving = ref(false)
+  const loading = ref(false)
+  const pagosData = ref(null)
 
   async function pagarReserva(payload) {
     saving.value = true
@@ -38,5 +40,19 @@ export function usePagos() {
     }
   }
 
-  return { saving, pagarReserva, pagarTienda }
+  async function fetchPagos(params) {
+    loading.value = true
+    try {
+      const result = await getPagos(params)
+      pagosData.value = result
+      return result
+    } catch (e) {
+      $q.notify({ type: 'negative', message: 'Error al cargar el historial de pagos', icon: 'error' })
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return { saving, loading, pagosData, pagarReserva, pagarTienda, fetchPagos }
 }

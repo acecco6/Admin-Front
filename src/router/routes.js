@@ -81,9 +81,21 @@ const routes = [
       },
       {
         path: 'pagos',
-        name: 'pagos',
-        component: () => import('src/modules/pagos/PagosPage.vue'),
         meta: { requiresAuth: true, label: 'Pagos' },
+        children: [
+          {
+            path: 'nuevo',
+            name: 'pagos',
+            component: () => import('src/modules/pagos/PagosPage.vue'),
+            meta: { requiresAuth: true, label: 'Nuevo Pago' },
+          },
+          {
+            path: 'historial',
+            name: 'pagos-historial',
+            component: () => import('src/modules/pagos/HistorialPagosPage.vue'),
+            meta: { requiresAuth: true, label: 'Historial' },
+          },
+        ],
       },
     ],
   },

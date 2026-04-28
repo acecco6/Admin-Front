@@ -87,11 +87,25 @@
             <q-item-section class="nav-text">Tienda</q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple :to="{ name: 'pagos' }" exact
-            active-class="nav-item--active" class="nav-item">
-            <q-item-section avatar><q-icon name="payments" /></q-item-section>
-            <q-item-section class="nav-text">Pagos</q-item-section>
-          </q-item>
+          <q-expansion-item
+            icon="payments"
+            label="Pagos"
+            active-class="nav-item--active"
+            class="nav-item-expansion"
+            :header-class="{'nav-item--active': $route.path.includes('/pagos')}"
+            default-opened
+          >
+            <q-item clickable v-ripple :to="{ name: 'pagos' }" exact
+              active-class="nav-item--active-sub" class="nav-item-sub">
+              <q-item-section avatar><q-icon name="add_circle" size="18px" /></q-item-section>
+              <q-item-section class="nav-text">Nuevo Pago</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple :to="{ name: 'pagos-historial' }" exact
+              active-class="nav-item--active-sub" class="nav-item-sub">
+              <q-item-section avatar><q-icon name="history" size="18px" /></q-item-section>
+              <q-item-section class="nav-text">Historial</q-item-section>
+            </q-item>
+          </q-expansion-item>
 
           <!-- ── Próximamente ── -->
           <div class="nav-label" v-if="!miniState" style="margin-top: 16px">PRÓXIMAMENTE</div>

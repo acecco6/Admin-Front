@@ -14,25 +14,65 @@ const routes = [
     meta: { requiresAuth: true },
     redirect: '/dashboard',
     children: [
+      // ── Dashboard ──────────────────────────────────────────────
       {
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('pages/DashboardPage.vue'),
-        meta: { requiresAuth: true, label: 'Dashboard', icon: 'dashboard' },
+        meta: { requiresAuth: true, label: 'Dashboard' },
       },
-      // ——— Agregá tus rutas aquí ———
+
+      // ── Módulos activos ────────────────────────────────────────
       {
-        path: 'profesiones',
-        name: 'profesiones',
-        component: () => import('pages/ProfesionesPage.vue'),
-        meta: { requiresAuth: true, label: 'Profesiones', icon: 'work' },
+        path: 'sucursales',
+        name: 'sucursales',
+        component: () => import('src/modules/sucursales/SucursalesPage.vue'),
+        meta: { requiresAuth: true, label: 'Sucursales' },
       },
-      // {
-      //   path: 'usuarios',
-      //   name: 'usuarios',
-      //   component: () => import('pages/UsuariosPage.vue'),
-      //   meta: { requiresAuth: true, label: 'Usuarios', icon: 'people' },
-      // },
+      {
+        path: 'tipo-canchas',
+        name: 'tipo-canchas',
+        component: () => import('src/modules/tipo-canchas/TipoCanchasPage.vue'),
+        meta: { requiresAuth: true, label: 'Tipo de Canchas' },
+      },
+      {
+        path: 'reservas',
+        name: 'reservas',
+        component: () => import('src/modules/reservas/ReservasPage.vue'),
+        meta: { requiresAuth: true, label: 'Reservas' },
+      },
+      {
+        path: 'reservas-fijas',
+        name: 'reservas-fijas',
+        component: () => import('src/modules/reservas-fijas/ReservasFijasPage.vue'),
+        meta: { requiresAuth: true, label: 'Reservas Fijas' },
+      },
+
+      // ── Módulos futuros (skeletons) ────────────────────────────
+      {
+        path: 'usuarios',
+        name: 'usuarios',
+        component: () => import('src/modules/usuarios/UsuariosPage.vue'),
+        meta: { requiresAuth: true, label: 'Usuarios' },
+      },
+      {
+        path: 'stock',
+        name: 'stock',
+        component: () => import('src/modules/stock/StockPage.vue'),
+        meta: { requiresAuth: true, label: 'Stock' },
+      },
+      {
+        path: 'tienda',
+        name: 'tienda',
+        component: () => import('src/modules/tienda/TiendaPage.vue'),
+        meta: { requiresAuth: true, label: 'Tienda' },
+      },
+      {
+        path: 'pagos',
+        name: 'pagos',
+        component: () => import('src/modules/pagos/PagosPage.vue'),
+        meta: { requiresAuth: true, label: 'Pagos' },
+      },
     ],
   },
 

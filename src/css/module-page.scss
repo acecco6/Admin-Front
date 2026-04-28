@@ -1,0 +1,210 @@
+// ═══════════════════════════════════════════════════
+// Estilos compartidos entre todos los módulos
+// ═══════════════════════════════════════════════════
+
+.module-page {
+  background: $bg-deep;
+  min-height: 100vh;
+}
+
+.page-container {
+  padding: 0 32px 32px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding: 0 16px 16px 16px;
+  }
+}
+
+/* ════ HEADER ════ */
+.page-header {
+  min-height: 90px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.header-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .icon-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+
+    .header-icon { font-size: 28px; }
+  }
+
+  .page-title {
+    margin: 0 0 4px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: $text-primary;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: $text-muted;
+    font-size: 0.95rem;
+  }
+}
+
+.action-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  .search-input {
+    width: 250px;
+
+    :deep(.q-field__control) {
+      background: $bg-card !important;
+      border-radius: 12px;
+      border: 1px solid $border-color;
+      &:before { border: none !important; }
+      &:hover { border-color: rgba($primary, 0.5); }
+    }
+    :deep(.q-field--focused .q-field__control) {
+      box-shadow: 0 0 0 2px rgba($primary, 0.2);
+      border-color: $primary;
+    }
+  }
+
+  .add-btn {
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba($primary, 0.3);
+    transition: all 0.3s ease;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary, 0.4);
+    }
+  }
+}
+
+/* ════ TABLE ════ */
+.table-container {
+  background: $bg-card;
+  border-radius: 20px;
+  border: 1px solid $border-color;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.custom-table {
+  background: transparent;
+
+  :deep(thead tr th) {
+    background: rgba(0, 0, 0, 0.2) !important;
+    color: $text-secondary;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    border-bottom: 2px solid $border-color;
+  }
+
+  :deep(tbody tr) {
+    transition: all 0.2s ease;
+    border-bottom-color: rgba(255, 255, 255, 0.03);
+    &:hover { background: $bg-hover !important; }
+  }
+
+  :deep(tbody td) {
+    padding: 14px 24px;
+    font-size: 0.9rem;
+    color: $text-primary;
+    border-bottom-color: $border-color;
+  }
+
+  :deep(.q-table__bottom) {
+    border-top: 1px solid $border-color;
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ════ ROW CELLS ════ */
+.row-name {
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: $text-primary;
+}
+
+.row-sub {
+  font-size: 0.72rem;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+/* ════ ACTION BUTTONS ════ */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.2s ease;
+  &.edit-btn:hover { background: rgba($accent, 0.15); transform: scale(1.1); }
+  &.delete-btn:hover { background: rgba($negative, 0.15); transform: scale(1.1) rotate(5deg); }
+  &.view-btn:hover { background: rgba($info, 0.15); transform: scale(1.1); }
+  &.toggle-btn:hover { background: rgba($warning, 0.15); transform: scale(1.1); }
+}
+
+/* ════ EMPTY STATE ════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  width: 100%;
+
+  .empty-icon {
+    width: 80px; height: 80px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    color: $text-muted;
+  }
+
+  .empty-title {
+    font-size: 1.5rem; font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 8px;
+  }
+
+  .empty-text {
+    color: $text-muted;
+    max-width: 400px;
+    margin: 0 0 24px;
+    line-height: 1.5;
+  }
+}

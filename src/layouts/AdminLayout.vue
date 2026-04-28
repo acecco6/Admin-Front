@@ -28,35 +28,69 @@
 
       <div class="menu-zone">
         <q-list class="premium-nav">
+          <!-- ── Principal ── -->
           <div class="nav-label" v-if="!miniState">MENÚ PRINCIPAL</div>
 
-          <q-item
-            clickable
-            v-ripple
-            :to="{ name: 'dashboard' }"
-            exact
-            active-class="nav-item--active"
-            class="nav-item"
-          >
-            <q-item-section avatar>
-              <q-icon name="grid_view" />
-            </q-item-section>
+          <q-item clickable v-ripple :to="{ name: 'dashboard' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="grid_view" /></q-item-section>
             <q-item-section class="nav-text">Dashboard</q-item-section>
           </q-item>
 
-          <q-item
-            clickable
-            v-ripple
-            :to="{ name: 'profesiones' }"
-            exact
-            active-class="nav-item--active"
-            class="nav-item"
-          >
-            <q-item-section avatar>
-              <q-icon name="work_outline" />
-            </q-item-section>
-            <q-item-section class="nav-text">Profesiones</q-item-section>
+          <q-item clickable v-ripple :to="{ name: 'sucursales' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="store" /></q-item-section>
+            <q-item-section class="nav-text">Sucursales</q-item-section>
           </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'tipo-canchas' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="category" /></q-item-section>
+            <q-item-section class="nav-text">Tipo de Canchas</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'reservas' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="event" /></q-item-section>
+            <q-item-section class="nav-text">Reservas</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'reservas-fijas' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="event_repeat" /></q-item-section>
+            <q-item-section class="nav-text">Reservas Fijas</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'stock' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="inventory_2" /></q-item-section>
+            <q-item-section class="nav-text">Stock</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'tienda' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="storefront" /></q-item-section>
+            <q-item-section class="nav-text">Tienda</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple :to="{ name: 'pagos' }" exact
+            active-class="nav-item--active" class="nav-item">
+            <q-item-section avatar><q-icon name="payments" /></q-item-section>
+            <q-item-section class="nav-text">Pagos</q-item-section>
+          </q-item>
+
+          <!-- ── Próximamente ── -->
+          <div class="nav-label" v-if="!miniState" style="margin-top: 16px">PRÓXIMAMENTE</div>
+
+          <q-item clickable v-ripple :to="{ name: 'usuarios' }" exact
+            active-class="nav-item--active" class="nav-item nav-item--future">
+            <q-item-section avatar><q-icon name="people" /></q-item-section>
+            <q-item-section class="nav-text">Usuarios</q-item-section>
+            <q-item-section side v-if="!miniState">
+              <q-badge color="warning" label="Pronto" />
+            </q-item-section>
+          </q-item>
+
         </q-list>
       </div>
 

@@ -200,7 +200,7 @@ async function handleLogin() {
 
     $q.notify({
       type: 'positive',
-      message: `¡Bienvenido ${authStore.user}!`,
+      message: `¡Bienvenido ${authStore.user.name}!`,
       icon: 'waving_hand',
       position: 'top-right',
       timeout: 3000,

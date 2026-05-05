@@ -24,3 +24,11 @@ export function getVentaDetalle(sucursal_id, id) {
 export function createVenta(payload) {
   return api.post('/api/venta/', payload).then((r) => r.data)
 }
+
+/**
+ * Elimina un producto de una venta.
+ * @param {{ venta_id: number, venta_detalle_id: number }} payload
+ */
+export function removeProducto(payload) {
+  return api.post('/api/venta/remove-producto', payload).then((r) => r.data)
+}

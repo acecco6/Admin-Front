@@ -1,12 +1,21 @@
 <template>
   <q-page class="module-page">
     <div class="page-container">
-
       <!-- PAGE HEADER -->
       <div class="page-header">
         <div class="header-content">
           <div class="title-section">
-            <div class="icon-wrapper" style="background: linear-gradient(135deg, rgba(251,146,60,0.2), rgba(234,88,12,0.2)); border-color: rgba(251,146,60,0.3);">
+            <div
+              class="icon-wrapper"
+              style="
+                background: linear-gradient(
+                  135deg,
+                  rgba(251, 146, 60, 0.2),
+                  rgba(234, 88, 12, 0.2)
+                );
+                border-color: rgba(251, 146, 60, 0.3);
+              "
+            >
               <q-icon name="storefront" class="header-icon" style="color: #fb923c" />
             </div>
             <div>
@@ -21,16 +30,31 @@
       <div class="filters-bar">
         <div class="filter-group">
           <label class="filter-label">Sucursal</label>
-          <q-select
-            v-model="sucursalId"
-            dark outlined dense
-            :options="sucursales"
-            option-value="id" option-label="nombre"
-            emit-value map-options
-            placeholder="Seleccionar sucursal..."
-            class="filter-select"
-            @update:model-value="onSucursalChange"
-          />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <q-select
+              v-model="sucursalId"
+              dark
+              outlined
+              dense
+              :options="sucursales"
+              option-value="id"
+              option-label="nombre"
+              emit-value
+              map-options
+              placeholder="Seleccionar sucursal..."
+              class="filter-select"
+              @update:model-value="onSucursalChange"
+            />
+            <q-btn 
+              v-if="sucursalId"
+              flat round dense
+              :color="sucursalId === defaultSucursalId ? 'warning' : 'grey-7'" 
+              :icon="sucursalId === defaultSucursalId ? 'star' : 'star_outline'"
+              @click="toggleDefaultSucursal(sucursalId)"
+            >
+              <q-tooltip>{{ sucursalId === defaultSucursalId ? 'Quitar sucursal por defecto' : 'Establecer como sucursal por defecto' }}</q-tooltip>
+            </q-btn>
+          </div>
         </div>
       </div>
 
@@ -49,14 +73,15 @@
 
       <!-- CONTENIDO PRINCIPAL -->
       <div v-else class="tienda-layout">
-
         <!-- ── Panel izquierdo: catálogo de productos ── -->
         <div class="catalog-panel">
           <div class="panel-header">
             <span class="panel-title">Catálogo de Productos</span>
             <q-input
               v-model="busqueda"
-              dark outlined dense
+              dark
+              outlined
+              dense
               placeholder="Buscar..."
               class="catalog-search"
             >
@@ -74,18 +99,30 @@
               v-for="prod in productosFiltrados"
               :key="prod.id"
               class="product-card"
-              @click="agregarAlCarrito(prod)"
+              :class="{ 'out-of-stock': prod.stock <= 0, 'low-stock': prod.stock > 0 && prod.stock <= 5 }"
+              @click="prod.stock > 0 ? agregarAlCarrito(prod) : null"
             >
               <div class="prod-icon">
-                <q-icon name="shopping_bag" size="24px" style="color: #fb923c" />
+                <q-icon name="shopping_bag" size="24px" :style="{ color: prod.stock <= 0 ? '#9ca3af' : '#fb923c' }" />
               </div>
               <div class="prod-info">
                 <div class="prod-name">{{ prod.nombre }}</div>
                 <div class="prod-code">{{ prod.codigo_barras }}</div>
+                <div class="stock-badge" v-if="prod.stock <= 0">Agotado</div>
+                <div class="stock-badge low" v-else-if="prod.stock <= 5">¡Solo {{ prod.stock }} en stock!</div>
               </div>
               <div class="prod-price">${{ Number(prod.precio).toLocaleString('es-AR') }}</div>
-              <q-btn flat round dense icon="add_circle" color="primary" size="sm" @click.stop="agregarAlCarrito(prod)">
-                <q-tooltip>Agregar al carrito</q-tooltip>
+              <q-btn
+                flat
+                round
+                dense
+                icon="add_circle"
+                color="primary"
+                size="sm"
+                :disable="prod.stock <= 0"
+                @click.stop="prod.stock > 0 ? agregarAlCarrito(prod) : null"
+              >
+                <q-tooltip v-if="prod.stock > 0">Agregar al carrito</q-tooltip>
               </q-btn>
             </div>
           </div>
@@ -105,15 +142,29 @@
             <div v-if="reservaAsociada" class="reserva-badge">
               <q-icon name="event_available" color="positive" size="18px" />
               <div class="reserva-info">
-                <span class="reserva-name">{{ reservaAsociada.nombre }} {{ reservaAsociada.apellido }}</span>
+                <span class="reserva-name"
+                  >{{ reservaAsociada.nombre }} {{ reservaAsociada.apellido }}</span
+                >
                 <span class="reserva-code">{{ reservaAsociada.codigo_reserva }}</span>
               </div>
-              <q-btn flat round dense icon="close" color="negative" size="xs" @click="quitarReserva" />
+              <q-btn
+                flat
+                round
+                dense
+                icon="close"
+                color="negative"
+                size="xs"
+                @click="quitarReserva"
+              />
             </div>
             <q-btn
               v-else
-              flat dense icon="link" label="Asociar a reserva"
-              color="grey-5" class="link-btn"
+              flat
+              dense
+              icon="link"
+              label="Asociar a reserva"
+              color="grey-5"
+              class="link-btn"
               @click="buscarReservaOpen = true"
             />
           </div>
@@ -129,15 +180,38 @@
             <div v-for="item in carrito" :key="item.id" class="cart-item">
               <div class="ci-name">{{ item.nombre }}</div>
               <div class="ci-controls">
-                <q-btn flat round dense icon="remove" size="xs" color="negative"
-                  @click="decrementarItem(item)" />
+                <q-btn
+                  flat
+                  round
+                  dense
+                  icon="remove"
+                  size="xs"
+                  color="negative"
+                  @click="decrementarItem(item)"
+                />
                 <span class="ci-qty">{{ item.cantidad }}</span>
-                <q-btn flat round dense icon="add" size="xs" color="positive"
-                  @click="incrementarItem(item)" />
+                <q-btn
+                  flat
+                  round
+                  dense
+                  icon="add"
+                  size="xs"
+                  color="positive"
+                  @click="incrementarItem(item)"
+                />
               </div>
-              <div class="ci-subtotal">${{ Number(item.precio * item.cantidad).toLocaleString('es-AR') }}</div>
-              <q-btn flat round dense icon="delete" size="xs" color="negative"
-                @click="quitarDelCarrito(item)" />
+              <div class="ci-subtotal">
+                ${{ Number(item.precio * item.cantidad).toLocaleString('es-AR') }}
+              </div>
+              <q-btn
+                flat
+                round
+                dense
+                icon="delete"
+                size="xs"
+                color="negative"
+                @click="quitarDelCarrito(item)"
+              />
             </div>
           </div>
 
@@ -148,7 +222,10 @@
               <span class="total-value">${{ totalCarrito.toLocaleString('es-AR') }}</span>
             </div>
             <q-btn
-              unelevated label="Crear Venta" icon="point_of_sale" color="positive"
+              unelevated
+              label="Crear Venta"
+              icon="point_of_sale"
+              color="positive"
               class="crear-venta-btn"
               :loading="saving"
               :disable="!carrito.length"
@@ -170,11 +247,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 import BuscarReservaDialog from './components/BuscarReservaDialog.vue'
 import { useTienda } from 'src/composables/useTienda'
 import { getSucursales } from 'src/services/sucursalService'
+import { useDefaultSucursal } from 'src/composables/useDefaultSucursal'
 
-const { productos, loading, saving, fetchProductos, guardarVenta } = useTienda()
+const $q = useQuasar()
+const { productos, loading, saving, fetchProductos, guardarVenta, actualizarStock } = useTienda()
+const { defaultSucursalId, toggleDefaultSucursal } = useDefaultSucursal()
 
 const sucursalId = ref(null)
 const sucursales = ref([])
@@ -187,30 +268,61 @@ const productosFiltrados = computed(() => {
   if (!busqueda.value) return productos.value
   const q = busqueda.value.toLowerCase()
   return productos.value.filter(
-    (p) => p.nombre?.toLowerCase().includes(q) || p.codigo_barras?.toLowerCase().includes(q)
+    (p) => p.nombre?.toLowerCase().includes(q) || p.codigo_barras?.toLowerCase().includes(q),
   )
 })
 
 const totalCarrito = computed(() =>
-  carrito.value.reduce((sum, item) => sum + item.precio * item.cantidad, 0)
+  carrito.value.reduce((sum, item) => sum + item.precio * item.cantidad, 0),
 )
 
 function onSucursalChange() {
   carrito.value = []
   reservaAsociada.value = null
-  fetchProductos()
+  fetchProductos(sucursalId.value)
 }
 
 function agregarAlCarrito(prod) {
   const existing = carrito.value.find((i) => i.id === prod.id)
   if (existing) {
-    existing.cantidad++
+    if (existing.cantidad < existing.stock) {
+      existing.cantidad++
+    } else {
+      $q.notify({
+        color: 'warning',
+        textColor: 'dark',
+        icon: 'warning',
+        message: 'Stock máximo alcanzado',
+        position: 'top-right'
+      })
+    }
   } else {
-    carrito.value.push({ ...prod, cantidad: 1 })
+    if (prod.stock > 0) {
+      carrito.value.push({ ...prod, cantidad: 1 })
+    } else {
+      $q.notify({
+        color: 'negative',
+        icon: 'error',
+        message: 'Producto sin stock',
+        position: 'top-right'
+      })
+    }
   }
 }
 
-function incrementarItem(item) { item.cantidad++ }
+function incrementarItem(item) {
+  if (item.cantidad < item.stock) {
+    item.cantidad++
+  } else {
+    $q.notify({
+      color: 'warning',
+      textColor: 'dark',
+      icon: 'warning',
+      message: 'Stock máximo alcanzado',
+      position: 'top-right'
+    })
+  }
+}
 
 function decrementarItem(item) {
   if (item.cantidad <= 1) {
@@ -242,8 +354,10 @@ async function crearVenta() {
       cantidad: item.cantidad,
     })),
   }
+  const prodIds = carrito.value.map((item) => item.id)
   try {
     await guardarVenta(payload)
+    await actualizarStock(sucursalId.value, prodIds)
     carrito.value = []
     reservaAsociada.value = null
   } catch {}
@@ -251,6 +365,10 @@ async function crearVenta() {
 
 onMounted(async () => {
   sucursales.value = await getSucursales()
+  if (defaultSucursalId.value) {
+    sucursalId.value = defaultSucursalId.value
+    onSucursalChange()
+  }
 })
 </script>
 
@@ -258,24 +376,46 @@ onMounted(async () => {
 @import 'src/css/module-page.scss';
 
 .filters-bar {
-  display: flex; align-items: flex-end; gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
 }
-.filter-group { display: flex; flex-direction: column; gap: 6px; }
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .filter-label {
-  font-size: 0.75rem; font-weight: 600; color: $text-muted;
-  text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 .filter-select {
   width: 280px;
   :deep(.q-field__control) {
-    background: $bg-card !important; border-radius: 12px; border: 1px solid $border-color;
-    &:before { border: none !important; }
-    &:hover { border-color: rgba($primary, 0.4); }
+    background: $bg-card !important;
+    border-radius: 12px;
+    border: 1px solid $border-color;
+    &:before {
+      border: none !important;
+    }
+    &:hover {
+      border-color: rgba($primary, 0.4);
+    }
   }
 }
 .loading-state {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 16px; padding: 80px 20px; color: $text-muted; font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 80px 20px;
+  color: $text-muted;
+  font-size: 0.9rem;
 }
 
 /* ── Layout principal ── */
@@ -291,7 +431,8 @@ onMounted(async () => {
 }
 
 /* ── Paneles ── */
-.catalog-panel, .cart-panel {
+.catalog-panel,
+.cart-panel {
   background: $bg-card;
   border: 1px solid $border-color;
   border-radius: 20px;
@@ -299,77 +440,164 @@ onMounted(async () => {
 }
 
 .panel-header {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 18px 20px;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid $border-color;
 }
 .panel-title {
-  font-size: 0.95rem; font-weight: 700; color: $text-primary;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $text-primary;
 }
 .catalog-search {
   width: 200px;
   :deep(.q-field__control) {
-    background: rgba(255,255,255,0.04) !important;
-    border-radius: 10px; border: 1px solid $border-color;
-    &:before { border: none !important; }
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-radius: 10px;
+    border: 1px solid $border-color;
+    &:before {
+      border: none !important;
+    }
   }
 }
 
 /* ── Grilla de productos ── */
 .products-grid {
   padding: 12px;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   max-height: calc(100vh - 320px);
   overflow-y: auto;
 }
 .empty-catalog {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 8px; padding: 40px; color: $text-muted; font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px;
+  color: $text-muted;
+  font-size: 0.85rem;
 }
 
 .product-card {
-  display: flex; align-items: center; gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: rgba(251,146,60,0.07);
-    border-color: rgba(251,146,60,0.25);
+    background: rgba(251, 146, 60, 0.07);
+    border-color: rgba(251, 146, 60, 0.25);
     transform: translateX(3px);
+  }
+
+  &.out-of-stock {
+    opacity: 0.6;
+    cursor: not-allowed;
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
+      border-color: transparent;
+      transform: none;
+    }
+  }
+
+  &.low-stock {
+    border-left: 3px solid #f59e0b;
+  }
+}
+
+.stock-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 2px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+
+  &.low {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
   }
 }
 .prod-icon {
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(251,146,60,0.1);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(251, 146, 60, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
-.prod-info { flex: 1; min-width: 0; }
+.prod-info {
+  flex: 1;
+  min-width: 0;
+}
 .prod-name {
-  font-size: 0.88rem; font-weight: 600; color: $text-primary;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.prod-code { font-size: 0.72rem; color: $text-muted; }
-.prod-price { font-size: 0.9rem; font-weight: 700; color: $text-primary; white-space: nowrap; }
+.prod-code {
+  font-size: 0.72rem;
+  color: $text-muted;
+}
+.prod-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $text-primary;
+  white-space: nowrap;
+}
 
 /* ── Carrito ── */
-.reserva-section { padding: 12px 16px; border-bottom: 1px solid $border-color; }
-.reserva-badge {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 12px;
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.25);
+.reserva-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid $border-color;
 }
-.reserva-info { flex: 1; display: flex; flex-direction: column; gap: 1px; }
-.reserva-name { font-size: 0.85rem; font-weight: 600; color: $text-primary; }
-.reserva-code { font-size: 0.72rem; color: $text-muted; font-family: monospace; }
+.reserva-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.reserva-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.reserva-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $text-primary;
+}
+.reserva-code {
+  font-size: 0.72rem;
+  color: $text-muted;
+  font-family: monospace;
+}
 .link-btn {
-  width: 100%; border-radius: 10px;
-  border: 1px dashed rgba(255,255,255,0.15);
+  width: 100%;
+  border-radius: 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
   font-size: 0.83rem;
 }
 
@@ -378,35 +606,90 @@ onMounted(async () => {
   min-height: 200px;
   max-height: calc(100vh - 440px);
   overflow-y: auto;
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .empty-cart {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 6px; padding: 40px 20px; color: $text-muted; font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 40px 20px;
+  color: $text-muted;
+  font-size: 0.85rem;
   text-align: center;
 }
-.empty-cart-hint { font-size: 0.75rem; color: rgba(255,255,255,0.2); }
+.empty-cart-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.2);
+}
 
 .cart-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 10px; border-radius: 10px;
-  background: rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid $border-color;
 }
-.ci-name { flex: 1; font-size: 0.83rem; font-weight: 600; color: $text-primary; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ci-controls { display: flex; align-items: center; gap: 4px; }
-.ci-qty { font-size: 0.9rem; font-weight: 700; color: $text-primary; min-width: 20px; text-align: center; }
-.ci-subtotal { font-size: 0.83rem; font-weight: 700; color: $text-primary; white-space: nowrap; }
+.ci-name {
+  flex: 1;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: $text-primary;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ci-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ci-qty {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $text-primary;
+  min-width: 20px;
+  text-align: center;
+}
+.ci-subtotal {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: $text-primary;
+  white-space: nowrap;
+}
 
 .cart-footer {
   padding: 16px;
   border-top: 1px solid $border-color;
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 .total-row {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.total-label { font-size: 0.85rem; color: $text-muted; font-weight: 600; }
-.total-value { font-size: 1.4rem; font-weight: 800; color: $text-primary; }
-.crear-venta-btn { width: 100%; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 1rem; }
+.total-label {
+  font-size: 0.85rem;
+  color: $text-muted;
+  font-weight: 600;
+}
+.total-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: $text-primary;
+}
+.crear-venta-btn {
+  width: 100%;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+}
 </style>

@@ -21,16 +21,27 @@
       <div class="filters-bar">
         <div class="filter-group">
           <label class="filter-label">Sucursal</label>
-          <q-select
-            v-model="sucursalId"
-            dark outlined dense
-            :options="sucursales"
-            option-value="id" option-label="nombre"
-            emit-value map-options
-            placeholder="Seleccionar sucursal..."
-            class="filter-select"
-            @update:model-value="cargarStock"
-          />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <q-select
+              v-model="sucursalId"
+              dark outlined dense
+              :options="sucursales"
+              option-value="id" option-label="nombre"
+              emit-value map-options
+              placeholder="Seleccionar sucursal..."
+              class="filter-select"
+              @update:model-value="cargarStock"
+            />
+            <q-btn 
+              v-if="sucursalId"
+              flat round dense
+              :color="sucursalId === defaultSucursalId ? 'warning' : 'grey-7'" 
+              :icon="sucursalId === defaultSucursalId ? 'star' : 'star_outline'"
+              @click="toggleDefaultSucursal(sucursalId)"
+            >
+              <q-tooltip>{{ sucursalId === defaultSucursalId ? 'Quitar sucursal por defecto' : 'Establecer como sucursal por defecto' }}</q-tooltip>
+            </q-btn>
+          </div>
         </div>
         <q-btn flat dense icon="refresh" color="primary" round @click="cargarStock" :disable="!sucursalId">
           <q-tooltip>Actualizar</q-tooltip>
@@ -142,8 +153,10 @@ import { ref, computed, onMounted } from 'vue'
 import StockUpdateDialog from './components/StockUpdateDialog.vue'
 import { useStock } from 'src/composables/useStock'
 import { getSucursales } from 'src/services/sucursalService'
+import { useDefaultSucursal } from 'src/composables/useDefaultSucursal'
 
 const { stockItems, loading, saving, fetchStock, actualizarStock } = useStock()
+const { defaultSucursalId, toggleDefaultSucursal } = useDefaultSucursal()
 
 const sucursalId = ref(null)
 const sucursales = ref([])
@@ -194,6 +207,10 @@ async function onStockSaved(payload) {
 
 onMounted(async () => {
   sucursales.value = await getSucursales()
+  if (defaultSucursalId.value) {
+    sucursalId.value = defaultSucursalId.value
+    await cargarStock()
+  }
 })
 </script>
 

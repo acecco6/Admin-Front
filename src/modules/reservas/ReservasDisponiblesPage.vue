@@ -221,7 +221,9 @@ const canchasPlanas = computed(() => {
 
 const fechaFormateada = computed(() => {
   if (!fecha.value) return ''
-  return new Date(fecha.value + 'T12:00:00').toLocaleDateString('es-AR', {
+  const [year, month, day] = fecha.value.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return date.toLocaleDateString('es-AR', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',

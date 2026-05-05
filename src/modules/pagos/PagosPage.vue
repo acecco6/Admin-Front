@@ -30,20 +30,31 @@
       <div class="filters-bar">
         <div class="filter-group">
           <label class="filter-label">Sucursal</label>
-          <q-select
-            v-model="sucursalId"
-            dark
-            outlined
-            dense
-            :options="sucursales"
-            option-value="id"
-            option-label="nombre"
-            emit-value
-            map-options
-            placeholder="Seleccionar sucursal..."
-            class="filter-select"
-            @update:model-value="onSucursalChange"
-          />
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <q-select
+              v-model="sucursalId"
+              dark
+              outlined
+              dense
+              :options="sucursales"
+              option-value="id"
+              option-label="nombre"
+              emit-value
+              map-options
+              placeholder="Seleccionar sucursal..."
+              class="filter-select"
+              @update:model-value="onSucursalChange"
+            />
+            <q-btn 
+              v-if="sucursalId"
+              flat round dense
+              :color="sucursalId === defaultSucursalId ? 'warning' : 'grey-7'" 
+              :icon="sucursalId === defaultSucursalId ? 'star' : 'star_outline'"
+              @click="toggleDefaultSucursal(sucursalId)"
+            >
+              <q-tooltip>{{ sucursalId === defaultSucursalId ? 'Quitar sucursal por defecto' : 'Establecer como sucursal por defecto' }}</q-tooltip>
+            </q-btn>
+          </div>
         </div>
       </div>
 
@@ -255,6 +266,7 @@
       :reserva="reservaSeleccionada"
       :saving="savingPago"
       @cobrar="onCobrarReserva"
+      @remove-producto="onRemoveProductoReserva"
     />
 
     <!-- Dialog: Cobrar Venta Tienda -->
@@ -265,12 +277,14 @@
       :loading-detalle="loadingVentaDetalle"
       :saving="savingPago"
       @cobrar="onCobrarTienda"
+      @remove-producto="onRemoveProductoTienda"
     />
   </q-page>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
 import PagoReservaDialog from './components/PagoReservaDialog.vue'
 import PagoTiendaDialog from './components/PagoTiendaDialog.vue'
 import { usePagos } from 'src/composables/usePagos'
@@ -278,10 +292,14 @@ import { useReservas } from 'src/composables/useReservas'
 import { getSucursales } from 'src/services/sucursalService'
 import { getTipoCanchas } from 'src/services/tipoCanchaService'
 import { getReserva } from 'src/services/reservaService'
-import { getVentas, getVentaDetalle } from 'src/services/ventaService'
+import { getVentas, getVentaDetalle, removeProducto } from 'src/services/ventaService'
+import { useDefaultSucursal } from 'src/composables/useDefaultSucursal'
+
+const $q = useQuasar()
 
 const { saving: savingPago, pagarReserva, pagarTienda } = usePagos()
 const { reservasData, loading: loadingReservas, fetchReservas } = useReservas()
+const { defaultSucursalId, toggleDefaultSucursal } = useDefaultSucursal()
 
 // State global
 const sucursalId = ref(null)
@@ -373,6 +391,34 @@ async function onCobrarTienda(payload) {
   } catch {}
 }
 
+async function onRemoveProductoReserva(payload) {
+  try {
+    await removeProducto(payload)
+    $q.notify({ type: 'positive', message: 'Producto eliminado correctamente.' })
+    // Solo actualizar el detalle de la reserva seleccionada (sin recargar la grilla)
+    reservaSeleccionada.value = await getReserva(reservaSeleccionada.value.id)
+  } catch (error) {
+    $q.notify({ type: 'negative', message: 'Error al eliminar el producto.' })
+  }
+}
+
+async function onRemoveProductoTienda(payload) {
+  try {
+    await removeProducto(payload)
+    $q.notify({ type: 'positive', message: 'Producto eliminado correctamente.' })
+    if (ventaSeleccionada.value) {
+       loadingVentaDetalle.value = true
+       ventaDetalle.value = await getVentaDetalle(sucursalId.value, ventaSeleccionada.value.id)
+       // Actualizar localmente el total para que la lista de fondo lo refleje
+       ventaSeleccionada.value.total = ventaDetalle.value.total
+       loadingVentaDetalle.value = false
+    }
+  } catch (error) {
+    $q.notify({ type: 'negative', message: 'Error al eliminar el producto.' })
+    loadingVentaDetalle.value = false
+  }
+}
+
 function estadoVentaColor(estado) {
   if (estado === 1) return 'warning'
   if (estado === 2) return 'positive'
@@ -389,6 +435,11 @@ onMounted(async () => {
   const [suc, tipos] = await Promise.all([getSucursales(), getTipoCanchas()])
   sucursales.value = suc
   tipoCanchas.value = tipos
+
+  if (defaultSucursalId.value) {
+    sucursalId.value = defaultSucursalId.value
+    onSucursalChange()
+  }
 })
 </script>
 

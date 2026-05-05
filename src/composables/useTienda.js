@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { getProductos } from 'src/services/productoService'
+import { getProductos, actualizarStockTienda } from 'src/services/productoService'
 import { createVenta, getVentas, getVentaDetalle } from 'src/services/ventaService'
 
 export function useTienda() {
@@ -10,10 +10,10 @@ export function useTienda() {
   const loading = ref(false)
   const saving = ref(false)
 
-  async function fetchProductos() {
+  async function fetchProductos(sucursal_id) {
     loading.value = true
     try {
-      productos.value = await getProductos()
+      productos.value = await getProductos(sucursal_id)
     } catch (e) {
       $q.notify({ type: 'negative', message: 'Error al cargar productos', icon: 'error' })
     } finally {
@@ -49,7 +49,9 @@ export function useTienda() {
       return result
     } catch (e) {
       const errors = e.response?.data?.errors
-      const msg = errors ? Object.values(errors)[0]?.[0] : e.response?.data?.message || 'Error al crear la venta'
+      const msg = errors
+        ? Object.values(errors)[0]?.[0]
+        : e.response?.data?.message || 'Error al crear la venta'
       $q.notify({ type: 'negative', message: msg, icon: 'error' })
       throw e
     } finally {
@@ -57,5 +59,27 @@ export function useTienda() {
     }
   }
 
-  return { productos, ventas, loading, saving, fetchProductos, fetchVentas, fetchVentaDetalle, guardarVenta }
+  async function actualizarStock(sucursal_id, productosIds) {
+    try {
+      const actualizados = await actualizarStockTienda(sucursal_id, productosIds)
+      actualizados.forEach(act => {
+        const p = productos.value.find(x => x.id === act.id)
+        if (p) p.stock = act.stock
+      })
+    } catch (e) {
+      console.error('Error al actualizar stock', e)
+    }
+  }
+
+  return {
+    productos,
+    ventas,
+    loading,
+    saving,
+    fetchProductos,
+    fetchVentas,
+    fetchVentaDetalle,
+    guardarVenta,
+    actualizarStock,
+  }
 }

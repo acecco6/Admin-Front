@@ -68,6 +68,7 @@
               <span class="vd-qty">{{ d.cantidad }}x</span>
               <span class="vd-name">{{ d.producto?.nombre }}</span>
               <span class="vd-sub">${{ Number(d.subtotal).toLocaleString('es-AR') }}</span>
+              <q-btn flat round dense icon="delete" color="negative" size="sm" @click="confirmarEliminarProducto(v.id, d.id, d.cantidad)" />
             </div>
           </div>
         </div>
@@ -135,13 +136,15 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
   modelValue: Boolean,
   reserva: { type: Object, default: null },
   saving: Boolean,
 })
-const emit = defineEmits(['update:modelValue', 'cobrar'])
+const emit = defineEmits(['update:modelValue', 'cobrar', 'remove-producto'])
+const $q = useQuasar()
 
 const show = computed({
   get: () => props.modelValue,
@@ -176,6 +179,28 @@ function cobrar() {
 
 function cerrar() {
   show.value = false
+}
+
+function confirmarEliminarProducto(ventaId, detalleId, cantidadMax) {
+  $q.dialog({
+    title: 'Eliminar Producto',
+    message: `¿Cuántas unidades deseas eliminar? (Máximo: ${cantidadMax})`,
+    prompt: {
+      model: cantidadMax,
+      type: 'number',
+      min: 1,
+      max: cantidadMax
+    },
+    cancel: true,
+    persistent: true,
+    color: 'negative'
+  }).onOk((data) => {
+    emit('remove-producto', {
+      venta_id: ventaId,
+      venta_detalle_id: detalleId,
+      cantidad: Number(data)
+    })
+  })
 }
 </script>
 

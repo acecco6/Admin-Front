@@ -1,31 +1,35 @@
 <template>
   <!-- Tab de canchas dentro de una sucursal -->
   <div class="canchas-tab">
-
     <!-- Toolbar -->
     <div class="tab-toolbar">
       <div class="tab-info">
         <q-icon name="sports_tennis" color="positive" size="18px" />
-        <span class="tab-count">{{ canchas.length }} cancha{{ canchas.length !== 1 ? 's' : '' }}</span>
+        <span class="tab-count"
+          >{{ canchas.length }} cancha{{ canchas.length !== 1 ? 's' : '' }}</span
+        >
       </div>
-      <q-btn
-        unelevated color="positive" icon="add" label="Agregar Cancha"
-        size="sm" class="add-cancha-btn"
-        @click="$emit('addCancha')"
-      />
     </div>
 
     <!-- Sin canchas -->
     <div v-if="!canchas.length" class="no-canchas">
       <q-icon name="sports_tennis" size="36px" color="grey-7" />
       <p>Esta sucursal no tiene canchas registradas.</p>
-      <q-btn outline color="positive" icon="add" label="Agregar primera cancha" size="sm" @click="$emit('addCancha')" />
+      <q-btn
+        outline
+        color="positive"
+        icon="add"
+        label="Agregar primera cancha"
+        size="sm"
+        @click="$emit('addCancha')"
+      />
     </div>
 
     <!-- Grid de canchas -->
     <div v-else class="canchas-grid">
       <div
-        v-for="cancha in canchas" :key="cancha.id"
+        v-for="cancha in canchas"
+        :key="cancha.id"
         class="cancha-card"
         :class="{ 'cancha-card--inactive': !cancha.activa }"
       >
@@ -52,13 +56,21 @@
         <!-- Acciones -->
         <div class="cancha-card__actions">
           <q-btn
-            flat round dense icon="edit" color="accent" size="sm"
+            flat
+            round
+            dense
+            icon="edit"
+            color="accent"
+            size="sm"
             @click="$emit('editCancha', cancha)"
           >
             <q-tooltip>Editar</q-tooltip>
           </q-btn>
           <q-btn
-            flat round dense size="sm"
+            flat
+            round
+            dense
+            size="sm"
             :icon="cancha.activa ? 'visibility_off' : 'visibility'"
             :color="cancha.activa ? 'warning' : 'positive'"
             @click="$emit('toggleCancha', cancha)"
@@ -66,7 +78,12 @@
             <q-tooltip>{{ cancha.activa ? 'Desactivar' : 'Activar' }}</q-tooltip>
           </q-btn>
           <q-btn
-            flat round dense icon="delete_outline" color="negative" size="sm"
+            flat
+            round
+            dense
+            icon="delete_outline"
+            color="negative"
+            size="sm"
             @click="$emit('deleteCancha', cancha)"
           >
             <q-tooltip>Eliminar</q-tooltip>
@@ -104,7 +121,9 @@ defineEmits(['addCancha', 'editCancha', 'toggleCancha', 'deleteCancha'])
   color: $text-secondary;
 }
 
-.tab-count { font-weight: 600; }
+.tab-count {
+  font-weight: 600;
+}
 
 .add-cancha-btn {
   border-radius: 10px;

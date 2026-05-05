@@ -23,3 +23,27 @@ export function cobrarTienda(payload) {
 export function getPagos(params) {
   return api.get('/api/pago', { params }).then((r) => r.data)
 }
+
+/**
+ * Obtiene los ingresos totales filtrados por sucursal.
+ * @param {number} sucursal_id
+ */
+export function getIngresosTotales(sucursal_id) {
+  return api.get('/api/pago/ingresos-totales', { params: { sucursal_id } }).then((r) => r.data)
+}
+
+/**
+ * Obtiene los ingresos por reservas filtrados por sucursal.
+ * @param {number} sucursal_id
+ */
+export function getIngresosReservas(sucursal_id) {
+  return api.get('/api/pago/ingresos-reservas', { params: { sucursal_id } }).then((r) => r.data)
+}
+
+/**
+ * Obtiene los ingresos por tienda filtrados por sucursal.
+ * @param {number} sucursal_id
+ */
+export function getIngresosTienda(sucursal_id) {
+  return api.get('/api/pago/ingresos-tienda', { params: { sucursal_id } }).then((r) => r.data)
+}

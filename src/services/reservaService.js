@@ -42,6 +42,24 @@ export function createReserva(payload) {
   return api.post('/api/reservas', payload).then((r) => r.data.data)
 }
 
+/**
+ * Obtiene reservas pendientes de pago
+ * @param {number} sucursal_id
+ * @returns {Promise<Array>}
+ */
+export function getReservasPendientes(sucursal_id) {
+  return api.get('/api/reservas/pendientes', { params: { sucursal_id } }).then((r) => r.data.data)
+}
+
+/**
+ * Obtiene reservas por finalizar (menos de 30 min)
+ * @param {number} sucursal_id
+ * @returns {Promise<Array>}
+ */
+export function getReservasFinalizar(sucursal_id) {
+  return api.get('/api/reservas/finalizar', { params: { sucursal_id } }).then((r) => r.data.data)
+}
+
 // ─── Reservas fijas ───────────────────────────────────────────────────────────
 
 /**

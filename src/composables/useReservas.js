@@ -5,12 +5,16 @@ import {
   getReserva,
   createReserva,
   getDisponibilidad,
+  getReservasPendientes,
+  getReservasFinalizar,
 } from 'src/services/reservaService'
 
 export function useReservas() {
   const $q = useQuasar()
   const reservasData = ref(null) // respuesta completa de /api/reservas/cancha
   const disponibilidadData = ref(null) // respuesta completa de /api/reservas/disponibilidad
+  const pendientesData = ref([])
+  const finalizarData = ref([])
   const loading = ref(false)
   const saving = ref(false)
 
@@ -98,14 +102,56 @@ export function useReservas() {
     }
   }
 
+  /**
+   * Carga reservas pendientes de pago
+   * @param {number} sucursalId
+   */
+  async function fetchReservasPendientes(sucursalId) {
+    loading.value = true
+    try {
+      pendientesData.value = await getReservasPendientes(sucursalId)
+    } catch (e) {
+      $q.notify({
+        type: 'negative',
+        message: e.response?.data?.message || 'Error al cargar reservas pendientes',
+        icon: 'error',
+      })
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Carga reservas por finalizar
+   * @param {number} sucursalId
+   */
+  async function fetchReservasFinalizar(sucursalId) {
+    loading.value = true
+    try {
+      finalizarData.value = await getReservasFinalizar(sucursalId)
+    } catch (e) {
+      $q.notify({
+        type: 'negative',
+        message: e.response?.data?.message || 'Error al cargar reservas por finalizar',
+        icon: 'error',
+      })
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     reservasData,
     disponibilidadData,
+    pendientesData,
+    finalizarData,
     loading,
     saving,
     fetchReservas,
     fetchDisponibilidad,
     fetchDetalleReserva,
     guardarReserva,
+    fetchReservasPendientes,
+    fetchReservasFinalizar,
   }
 }

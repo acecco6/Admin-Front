@@ -61,7 +61,7 @@
           <div class="section-label">Ventas de tienda asociadas</div>
           <div v-for="v in reserva.ventas" :key="v.id" class="venta-item">
             <div class="venta-header">
-              <q-icon name="shopping_bag" size="14px" color="orange" />
+              <q-icon name="shopping_bag" size="14px" color="warning" />
               <span class="venta-total">Venta · ${{ Number(v.total).toLocaleString('es-AR') }}</span>
             </div>
             <div v-for="d in v.detalles" :key="d.id" class="venta-detalle">
